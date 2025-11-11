@@ -1,103 +1,187 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useState } from "react"
+import { Sidebar } from "@/components/sidebar"
+import { StoresTable } from "@/components/stores-table"
+import { AddStoreModal } from "@/components/add-store-modal"
+import { EditStoreModal } from "@/components/edit-store-modal"
+import { DeleteStoreModal } from "@/components/delete-store-modal"
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
+import type { Store } from "@/types/store"
+
+export default function DashboardPage() {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [selectedStore, setSelectedStore] = useState<Store | null>(null)
+  const [stores, setStores] = useState<Store[]>([
+    {
+      id: "1",
+      name: "Downtown Store",
+      location: "123 Main St, Downtown City",
+      phone: "(555) 123-4567",
+      email: "downtown@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "2",
+      name: "Uptown Store",
+      location: "456 High St, Uptown City",
+      phone: "(555) 234-5678",
+      email: "uptown@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "3",
+      name: "Suburb Store",
+      location: "789 Suburb Ln, Suburb City",
+      phone: "(555) 345-6789",
+      email: "suburb@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "4",
+      name: "Eastside Store",
+      location: "101 East St, Eastside City",
+      phone: "(555) 456-7890",
+      email: "eastside@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "5",
+      name: "Westside Store",
+      location: "202 West Ave, Westside City",
+      phone: "(555) 567-8901",
+      email: "westside@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "6",
+      name: "Northside Store",
+      location: "303 North Rd, Northside City",
+      phone: "(555) 678-9012",
+      email: "northside@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "7",
+      name: "Southside Store",
+      location: "404 South Blvd, Southside City",
+      phone: "(555) 789-0123",
+      email: "southside@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "8",
+      name: "Central Store",
+      location: "505 Central St, City",
+      phone: "(555) 890-1234",
+      email: "central@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "9",
+      name: "Riverbank Store",
+      location: "606 River Rd, Riverbank City",
+      phone: "(555) 901-2345",
+      email: "riverbank@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "10",
+      name: "Hilltop Store",
+      location: "707 Hilltop Dr, Hilltop City",
+      phone: "(555) 112-2334",
+      email: "hilltop@example.com",
+      managerCode: "******",
+      logo: "/placeholder.svg?height=40&width=40",
+    },
+  ])
+
+  const handleAddStore = (store: Omit<Store, "id">) => {
+    const newStore: Store = {
+      ...store,
+      id: String(stores.length + 1),
+    }
+    setStores([...stores, newStore])
+    setIsAddModalOpen(false)
+  }
+
+  const handleEditStore = (updatedStore: Store) => {
+    setStores(stores.map((s) => (s.id === updatedStore.id ? updatedStore : s)))
+    setIsEditModalOpen(false)
+    setSelectedStore(null)
+  }
+
+  const handleDeleteStore = (storeId: string) => {
+    setStores(stores.filter((s) => s.id !== storeId))
+    setIsDeleteModalOpen(false)
+    setSelectedStore(null)
+  }
+
+  const handleView = (store: Store) => {
+    setSelectedStore(store)
+    setIsViewModalOpen(true)
+  }
+
+  const handleEdit = (store: Store) => {
+    setSelectedStore(store)
+    setIsEditModalOpen(true)
+  }
+
+  const handleDelete = (store: Store) => {
+    setSelectedStore(store)
+    setIsDeleteModalOpen(true)
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <main className="flex-1 overflow-auto">
+        <div className="p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Stores</h1>
+            <Button onClick={() => setIsAddModalOpen(true)} className="bg-red-600 hover:bg-red-700 text-white">
+              <Plus className="w-4 h-4 mr-2" />
+              Create New Store
+            </Button>
+          </div>
+
+          <StoresTable stores={stores} onView={handleView} onEdit={handleEdit} onDelete={handleDelete} />
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+      <AddStoreModal open={isAddModalOpen} onOpenChange={setIsAddModalOpen} onSubmit={handleAddStore} />
+
+      {selectedStore && (
+        <>
+          <EditStoreModal
+            open={isEditModalOpen}
+            onOpenChange={setIsEditModalOpen}
+            store={selectedStore}
+            onSubmit={handleEditStore}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+
+          <DeleteStoreModal
+            open={isDeleteModalOpen}
+            onOpenChange={setIsDeleteModalOpen}
+            store={selectedStore}
+            onConfirm={() => handleDeleteStore(selectedStore.id)}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </>
+      )}
     </div>
-  );
+  )
 }
